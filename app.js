@@ -155,7 +155,15 @@ function inviaWhatsApp() {
 Totale IVA esclusa: ${document.getElementById('totaleIva').textContent}
 Costo Trasporto: ${document.getElementById('costiTrasporto').textContent}
 Costo Installazione: ${document.getElementById('costiInstallazione').textContent}`;
-  let url = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
+  
+  let url;
+  // Controlla se il dispositivo è iOS
+  if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+    url = "whatsapp://send?text=" + encodeURIComponent(message);
+  } else {
+    url = "https://api.whatsapp.com/send?text=" + encodeURIComponent(message);
+  }
+  
   window.open(url, "_blank");
 }
 
@@ -176,6 +184,13 @@ Spese di Contratto: ${document.getElementById('speseContratto').textContent}
 Costo Giornaliero: ${document.getElementById('costoGiornaliero').textContent}
 Costo Orario: ${document.getElementById('costoOrario').textContent}`;
   
-  let url = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
+  let url;
+  // Controlla se il dispositivo è iOS
+  if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+    url = "whatsapp://send?text=" + encodeURIComponent(message);
+  } else {
+    url = "https://api.whatsapp.com/send?text=" + encodeURIComponent(message);
+  }
+  
   window.open(url, "_blank");
 }
