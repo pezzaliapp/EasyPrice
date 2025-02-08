@@ -92,12 +92,16 @@ function generaPDFProvvigione() {
 
     let importoNoleggio = parseEuropeanFloat(document.getElementById('importo').value);
     if (importoNoleggio >= 100) {
-        doc.text("🟢 Simulazione Noleggio:", 20, 70);
+        doc.text("Simulazione Noleggio:", 20, 70);
         doc.text("Importo Inserito: " + document.getElementById('importo').value + " €", 20, 80);
         doc.text("Rata Mensile: " + document.getElementById('rataMensile').textContent, 20, 90);
         doc.text("Spese di Contratto: " + document.getElementById('speseContratto').textContent, 20, 100);
         doc.text("Costo Giornaliero: " + document.getElementById('costoGiornaliero').textContent, 20, 110);
         doc.text("Costo Orario: " + document.getElementById('costoOrario').textContent, 20, 120);
+
+        // Nota per il compenso
+        doc.setFontSize(10);
+        doc.text("*Il compenso sarà calcolato al netto delle spese di trasporto e installazione.*", 20, 135);
     }
 
     doc.save("EasyPrice_Report_Provvigione.pdf");
