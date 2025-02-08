@@ -99,6 +99,17 @@ function generaPDFProvvigione() {
     doc.save("EasyPrice_Report_Provvigione.pdf");
 }
 
+function inviaWhatsApp() {
+    let message = `📌 EasyPrice - Report
+Totale IVA esclusa: ${document.getElementById('totaleIva').textContent}
+Costo Trasporto: ${document.getElementById('costiTrasporto').textContent}
+Costo Installazione: ${document.getElementById('costiInstallazione').textContent}
+Compenso/Provvigione: ${document.getElementById('provvigione').textContent}`;
+
+    let url = `https://wa.me/?text=${encodeURIComponent(message)}`;
+    window.open(url, "_blank");
+}
+
 function parseEuropeanFloat(value) {
     if (!value) return 0;
     value = value.replace(/€/g, '').replace(/\s/g, '').replace(/\./g, '').replace(',', '.');
