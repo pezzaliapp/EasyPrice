@@ -107,32 +107,12 @@ function generaPDF(includeNoleggio) {
 }
 
 function inviaWhatsApp() {
-    let message = `📌 EasyPrice - Report
-Prezzo Netto: ${cleanText(document.getElementById('prezzoNetto').textContent)}
-Totale IVA esclusa: ${cleanText(document.getElementById('totaleIva').textContent)}
-Maggiorazione rispetto al netto: ${cleanText(document.getElementById('maggiorazione').textContent)}`;
+    let message = `📌 EasyPrice - Simulazione Noleggio
+Rata Mensile: ${cleanText(document.getElementById('rataMensile').textContent)}
+Spese di Contratto: ${cleanText(document.getElementById('speseContratto').textContent)}
+Costo Giornaliero: ${cleanText(document.getElementById('costoGiornaliero').textContent)}
+Costo Orario: ${cleanText(document.getElementById('costoOrario').textContent)}`;
 
     let url = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
     window.open(url, "_blank");
-}
-
-function parseEuropeanFloat(value) {
-    if (!value) return 0;
-    return parseFloat(value.replace(/€/g, '').replace(/\s/g, '').replace(/,/g, '.').replace(/\./g, '')) || 0;
-}
-
-function formatNumber(value) {
-    return value.toLocaleString("it-IT", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-}
-
-function cleanText(text) {
-    return text.replace(/[^\x20-\x7E€]/g, '').trim();
-}
-
-function updateElementText(id, text) {
-    document.getElementById(id).textContent = text;
-}
-
-function addTextToPDF(doc, label, value, x, y) {
-    doc.text(label + cleanText(value), x, y);
 }
