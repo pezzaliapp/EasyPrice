@@ -7,26 +7,21 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function calcolaPrezzo() {
-    const prezzoLordo = parseFloat(document.getElementById('prezzoLordo').value) || 0;
+    const prezzoLordo = parseEuropeanFloat(document.getElementById('prezzoLordo').value);
     const sconto = parseFloat(document.getElementById('sconto').value) || 0;
     const margine = parseFloat(document.getElementById('margine').value) || 0;
-    const trasporto = parseFloat(document.getElementById('trasporto').value) || 0;
-    const installazione = parseFloat(document.getElementById('installazione').value) || 0;
+    const trasporto = parseEuropeanFloat(document.getElementById('trasporto').value);
+    const installazione = parseEuropeanFloat(document.getElementById('installazione').value);
 
     const prezzoNetto = prezzoLordo - (prezzoLordo * (sconto / 100));
     const prezzoConMargine = prezzoNetto / (1 - (margine / 100));
     const totale = prezzoConMargine + trasporto + installazione;
-    const maggiorazione = ((totale - prezzoNetto) / prezzoNetto) * 100;
 
-    document.getElementById('prezzoNetto').textContent = formatNumber(prezzoNetto) + " €";
     document.getElementById('totaleIva').textContent = formatNumber(totale) + " €";
-    document.getElementById('maggiorazione').textContent = formatNumber(maggiorazione) + " %";
-
-    localStorage.setItem("ultimoImporto", totale);
 }
 
 function calcolaNoleggio() {
-    let importo = parseFloat(document.getElementById('importo').value) || parseFloat(localStorage.getItem("ultimoImporto")) || 0;
+    let importo = parseEuropeanFloat(document.getElementById('importo').value) || parseEuropeanFloat(localStorage.getItem("ultimoImporto")) || 0;
     if (importo === 0 || isNaN(importo)) {
         alert("Per favore, inserisci un importo valido.");
         return;
@@ -90,9 +85,7 @@ function generaPDF(includeNoleggio) {
         doc.text("Costo Giornaliero: " + document.getElementById('costoGiornaliero').textContent, 20, 70);
         doc.text("Costo Orario: " + document.getElementById('costoOrario').textContent, 20, 80);
     } else {
-        doc.text("Prezzo Netto: " + document.getElementById('prezzoNetto').textContent, 20, 40);
-        doc.text("Totale IVA esclusa: " + document.getElementById('totaleIva').textContent, 20, 50);
-        doc.text("Maggiorazione rispetto al netto: " + document.getElementById('maggiorazione').textContent, 20, 60);
+        doc.text("Totale IVA esclusa: " + document.getElementById('totaleIva').textContent, 20, 40);
     }
 
     doc.save("EasyPrice_Report.pdf");
@@ -107,6 +100,12 @@ Costo Orario: ${document.getElementById('costoOrario').textContent}`;
 
     let url = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
     window.open(url, "_blank");
+}
+
+function parseEuropeanFloat(value) {
+    if (!value) return 0;
+    value = value.replace(/€/g, '').replace(/\s/g, '').replace(/\./g, '').replace(',', '.');
+    return parseFloat(value) || 0;
 }
 
 function formatNumber(value) {
