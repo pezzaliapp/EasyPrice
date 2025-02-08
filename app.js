@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById('generaPdfConNoleggio').addEventListener('click', () => generaPDF(true));
     document.getElementById('generaPdfSenzaNoleggio').addEventListener('click', () => generaPDF(false));
     document.getElementById('inviaWhatsApp').addEventListener('click', inviaWhatsApp);
+    document.getElementById('inviaWhatsAppCompleto').addEventListener('click', inviaWhatsAppCompleto);
 });
 
 function calcolaPrezzo() {
@@ -98,6 +99,20 @@ function generaPDF(includeNoleggio) {
 
 function inviaWhatsApp() {
     let message = `📌 EasyPrice - Simulazione Noleggio
+Rata Mensile: ${document.getElementById('rataMensile').textContent}
+Spese di Contratto: ${document.getElementById('speseContratto').textContent}
+Costo Giornaliero: ${document.getElementById('costoGiornaliero').textContent}
+Costo Orario: ${document.getElementById('costoOrario').textContent}`;
+
+    let url = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
+    window.open(url, "_blank");
+}
+
+function inviaWhatsAppCompleto() {
+    let importoInserito = document.getElementById('importo').value || "Non specificato";
+
+    let message = `📌 EasyPrice - Simulazione Noleggio (Report Completo)
+Valore Inserito: ${importoInserito} €
 Rata Mensile: ${document.getElementById('rataMensile').textContent}
 Spese di Contratto: ${document.getElementById('speseContratto').textContent}
 Costo Giornaliero: ${document.getElementById('costoGiornaliero').textContent}
