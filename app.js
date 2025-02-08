@@ -50,7 +50,7 @@ function calcolaPrezzo() {
 
   const provvigione = ((totaleIvaEsclusa - trasporto - installazione) * (margine / 100));
 
-  // Imposta il contenuto dei risultati (assicurati che gli elementi HTML non contengano già il simbolo "€")
+  // Aggiorna i risultati
   document.getElementById('totaleIva').textContent = formatNumber(totaleIvaEsclusa) + " €";
   document.getElementById('provvigione').textContent = formatNumber(provvigione) + " €";
   document.getElementById('costiTrasporto').textContent = formatNumber(trasporto) + " €";
@@ -81,7 +81,7 @@ function calcolaNoleggio() {
   let costoGiornaliero = rataMensile / 22;
   let costoOrario = costoGiornaliero / 8;
 
-  // Imposta i risultati per il noleggio
+  // Aggiorna i risultati del noleggio
   document.getElementById("rataMensile").textContent = formatNumber(rataMensile) + " €";
   document.getElementById("speseContratto").textContent = formatNumber(speseContratto) + " €";
   document.getElementById("costoGiornaliero").textContent = formatNumber(costoGiornaliero) + " €";
@@ -126,20 +126,17 @@ function generaPDF(includeNoleggio, includeProvvigione) {
   doc.text("Totale IVA esclusa: " + document.getElementById('totaleIva').textContent, 20, 40);
   doc.text("Costo Trasporto: " + document.getElementById('costiTrasporto').textContent, 20, 50);
   doc.text("Costo Installazione: " + document.getElementById('costiInstallazione').textContent, 20, 60);
-  // Non visualizziamo le Spese di Contratto nell'intestazione, in modo che compaiano solo nella sezione noleggio.
+  
   if (includeProvvigione) {
-    doc.text("Compenso/Provvigione: " + document.getElementById('provvigione').textContent, 20, 70);
+    doc.text("Compenso: " + document.getElementById('provvigione').textContent, 20, 70);
   }
 
   if (includeNoleggio) {
-    // Imposta la posizione di partenza in base all'altezza già usata
     let y = (includeProvvigione ? 80 : 70) + 10;
-    // (Opzionale) Visualizza la durata dei canoni, se desiderato
     const durataSelect = document.getElementById('durata');
     const durataText = durataSelect.options[durataSelect.selectedIndex].text;
     doc.text("Durata: " + durataText, 20, y);
     y += 10;
-    // Visualizza i dati della simulazione nel seguente ordine:
     doc.text("Rata Mensile: " + document.getElementById('rataMensile').textContent, 20, y);
     y += 10;
     doc.text("Spese di Contratto: " + document.getElementById('speseContratto').textContent, 20, y);
@@ -162,7 +159,7 @@ Costo Installazione: ${document.getElementById('costiInstallazione').textContent
   window.open(url, "_blank");
 }
 
-// ** Invia WhatsApp con report completo, includendo i dati del noleggio **
+// ** Invia WhatsApp con report completo, includendo i dati di prezzo e noleggio **
 function inviaWhatsAppCompleto() {
   const durataSelect = document.getElementById('durata');
   const durataText = durataSelect.options[durataSelect.selectedIndex].text;
@@ -171,6 +168,8 @@ function inviaWhatsAppCompleto() {
 Totale IVA esclusa: ${document.getElementById('totaleIva').textContent}
 Costo Trasporto: ${document.getElementById('costiTrasporto').textContent}
 Costo Installazione: ${document.getElementById('costiInstallazione').textContent}
+Compenso: ${document.getElementById('provvigione').textContent}
+-----------------------------------------
 Durata: ${durataText}
 Rata Mensile: ${document.getElementById('rataMensile').textContent}
 Spese di Contratto: ${document.getElementById('speseContratto').textContent}
