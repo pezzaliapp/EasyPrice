@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById('calcolaNoleggio').addEventListener('click', calcolaNoleggio);
     document.getElementById('generaPdfConNoleggio').addEventListener('click', () => generaPDF(true));
     document.getElementById('generaPdfSenzaNoleggio').addEventListener('click', () => generaPDF(false));
+    document.getElementById('generaPdfConProvvigione').addEventListener('click', generaPDFProvvigione);
     document.getElementById('inviaWhatsApp').addEventListener('click', inviaWhatsApp);
     document.getElementById('inviaWhatsAppCompleto').addEventListener('click', inviaWhatsAppCompleto);
 });
@@ -18,10 +19,12 @@ function calcolaPrezzo() {
     const prezzoConMargine = prezzoNetto / (1 - (margine / 100));
     const totale = prezzoConMargine + trasporto + installazione;
     const maggiorazione = ((totale - prezzoNetto) / prezzoNetto) * 100;
+    const provvigione = ((prezzoConMargine - trasporto - installazione) * (margine / 100));
 
     document.getElementById('prezzoNetto').textContent = formatNumber(prezzoNetto) + " €";
     document.getElementById('totaleIva').textContent = formatNumber(totale) + " €";
     document.getElementById('maggiorazione').textContent = formatNumber(maggiorazione) + " %";
+    document.getElementById('provvigione').textContent = formatNumber(provvigione) + " €";
 
     localStorage.setItem("ultimoImporto", totale);
 }
@@ -76,50 +79,28 @@ function getCoefficient(importo, durata) {
     return null;
 }
 
-function generaPDF(includeNoleggio) {
+function generaPDFProvvigione() {
     const { jsPDF } = window.jspdf;
     let doc = new jsPDF();
 
     doc.setFontSize(16);
-    doc.text("EasyPrice - Report", 20, 20);
+    doc.text("EasyPrice - Report con Provvigione", 20, 20);
     doc.setFontSize(12);
 
-    if (includeNoleggio) {
-        doc.text("Importo Inserito: " + document.getElementById('importo').value + " €", 20, 40);
-        doc.text("Rata Mensile: " + document.getElementById('rataMensile').textContent, 20, 50);
-        doc.text("Spese di Contratto: " + document.getElementById('speseContratto').textContent, 20, 60);
-        doc.text("Costo Giornaliero: " + document.getElementById('costoGiornaliero').textContent, 20, 70);
-        doc.text("Costo Orario: " + document.getElementById('costoOrario').textContent, 20, 80);
-    } else {
-        doc.text("Totale IVA esclusa: " + document.getElementById('totaleIva').textContent, 20, 40);
+    doc.text("Totale IVA esclusa: " + document.getElementById('totaleIva').textContent, 20, 40);
+    doc.text("Compenso/Provvigione: " + document.getElementById('provvigione').textContent, 20, 50);
+
+    let importoNoleggio = parseEuropeanFloat(document.getElementById('importo').value);
+    if (importoNoleggio >= 100) {
+        doc.text("🟢 Simulazione Noleggio:", 20, 70);
+        doc.text("Importo Inserito: " + document.getElementById('importo').value + " €", 20, 80);
+        doc.text("Rata Mensile: " + document.getElementById('rataMensile').textContent, 20, 90);
+        doc.text("Spese di Contratto: " + document.getElementById('speseContratto').textContent, 20, 100);
+        doc.text("Costo Giornaliero: " + document.getElementById('costoGiornaliero').textContent, 20, 110);
+        doc.text("Costo Orario: " + document.getElementById('costoOrario').textContent, 20, 120);
     }
 
-    doc.save("EasyPrice_Report.pdf");
-}
-
-function inviaWhatsApp() {
-    let message = `📌 EasyPrice - Simulazione Noleggio
-Rata Mensile: ${document.getElementById('rataMensile').textContent}
-Spese di Contratto: ${document.getElementById('speseContratto').textContent}
-Costo Giornaliero: ${document.getElementById('costoGiornaliero').textContent}
-Costo Orario: ${document.getElementById('costoOrario').textContent}`;
-
-    let url = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
-    window.open(url, "_blank");
-}
-
-function inviaWhatsAppCompleto() {
-    let importoInserito = document.getElementById('importo').value || "Non specificato";
-
-    let message = `📌 EasyPrice - Simulazione Noleggio (Report Completo)
-Valore Inserito: ${importoInserito} €
-Rata Mensile: ${document.getElementById('rataMensile').textContent}
-Spese di Contratto: ${document.getElementById('speseContratto').textContent}
-Costo Giornaliero: ${document.getElementById('costoGiornaliero').textContent}
-Costo Orario: ${document.getElementById('costoOrario').textContent}`;
-
-    let url = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
-    window.open(url, "_blank");
+    doc.save("EasyPrice_Report_Provvigione.pdf");
 }
 
 function parseEuropeanFloat(value) {
