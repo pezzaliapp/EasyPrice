@@ -22,6 +22,8 @@ function calcolaPrezzo() {
 
     document.getElementById('totaleIva').textContent = formatNumber(totaleIvaEsclusa) + " €";
     document.getElementById('provvigione').textContent = formatNumber(provvigione) + " €";
+    document.getElementById('costiTrasporto').textContent = formatNumber(trasporto) + " €";
+    document.getElementById('costiInstallazione').textContent = formatNumber(installazione) + " €";
 
     localStorage.setItem("totaleIvaEsclusa", totaleIvaEsclusa);
 }
@@ -80,25 +82,19 @@ function generaPDFProvvigione() {
     const { jsPDF } = window.jspdf;
     let doc = new jsPDF();
 
+    const totaleIvaEsclusa = document.getElementById('totaleIva').textContent;
+    const provvigione = document.getElementById('provvigione').textContent;
+    const trasporto = document.getElementById('costiTrasporto').textContent;
+    const installazione = document.getElementById('costiInstallazione').textContent;
+
     doc.setFontSize(16);
     doc.text("EasyPrice - Report con Provvigione", 20, 20);
     doc.setFontSize(12);
 
-    doc.text("Totale IVA esclusa: " + document.getElementById('totaleIva').textContent, 20, 40);
-    doc.text("Compenso/Provvigione: " + document.getElementById('provvigione').textContent, 20, 50);
-
-    let importoNoleggio = parseEuropeanFloat(document.getElementById('importo').value);
-    if (importoNoleggio >= 100) {
-        doc.text("Simulazione Noleggio:", 20, 70);
-        doc.text("Importo Inserito: " + document.getElementById('importo').value + " €", 20, 80);
-        doc.text("Rata Mensile: " + document.getElementById('rataMensile').textContent, 20, 90);
-        doc.text("Spese di Contratto: " + document.getElementById('speseContratto').textContent, 20, 100);
-        doc.text("Costo Giornaliero: " + document.getElementById('costoGiornaliero').textContent, 20, 110);
-        doc.text("Costo Orario: " + document.getElementById('costoOrario').textContent, 20, 120);
-
-        doc.setFontSize(10);
-        doc.text("*Il compenso sarà calcolato al netto delle spese di trasporto e installazione.*", 20, 135);
-    }
+    doc.text("Totale IVA esclusa: " + totaleIvaEsclusa, 20, 40);
+    doc.text("Costo Trasporto: " + trasporto, 20, 50);
+    doc.text("Costo Installazione: " + installazione, 20, 60);
+    doc.text("Compenso/Provvigione: " + provvigione, 20, 70);
 
     doc.save("EasyPrice_Report_Provvigione.pdf");
 }
