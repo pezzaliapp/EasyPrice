@@ -1,14 +1,15 @@
-const CACHE_NAME = "easyprice-cache-v2";
+const CACHE_NAME = "easyprice-cache-v3";
 const urlsToCache = [
     "/",
     "/index.html",
-    "/styles.css",
+    "/style.css",
     "/app.js",
     "/manifest.json",
     "/icon-192.png",
     "/icon-512.png"
 ];
 
+// Installazione del Service Worker e caching iniziale
 self.addEventListener("install", (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
@@ -17,6 +18,7 @@ self.addEventListener("install", (event) => {
     );
 });
 
+// Intercettazione delle richieste di rete e utilizzo della cache
 self.addEventListener("fetch", (event) => {
     event.respondWith(
         caches.match(event.request).then((response) => {
@@ -25,6 +27,7 @@ self.addEventListener("fetch", (event) => {
     );
 });
 
+// Aggiornamento della cache e rimozione di versioni obsolete
 self.addEventListener("activate", (event) => {
     event.waitUntil(
         caches.keys().then((cacheNames) => {
@@ -38,5 +41,5 @@ self.addEventListener("activate", (event) => {
             );
         })
     );
-    self.clients.claim();
+    self.clients.claim(); // Forza l'aggiornamento sui client
 });
