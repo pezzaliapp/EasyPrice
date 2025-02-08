@@ -16,8 +16,13 @@ function calcolaPrezzo() {
     const prezzoNetto = prezzoLordo - (prezzoLordo * (sconto / 100));
     const prezzoConMargine = prezzoNetto / (1 - (margine / 100));
     const totale = prezzoConMargine + trasporto + installazione;
+    const maggiorazione = ((totale - prezzoNetto) / prezzoNetto) * 100;
 
+    document.getElementById('prezzoNetto').textContent = formatNumber(prezzoNetto) + " €";
     document.getElementById('totaleIva').textContent = formatNumber(totale) + " €";
+    document.getElementById('maggiorazione').textContent = formatNumber(maggiorazione) + " %";
+
+    localStorage.setItem("ultimoImporto", totale);
 }
 
 function calcolaNoleggio() {
