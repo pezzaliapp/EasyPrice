@@ -6,17 +6,26 @@ document.getElementById('calcola').addEventListener('click', function() {
     let installazione = parseFloat(document.getElementById('installazione').value) || 0;
 
     let prezzoNetto = prezzoLordo - (prezzoLordo * (sconto / 100));
-    let prezzoConMargine = prezzoNetto / (1 - (margine / 100));
+    let prezzoConMargine = prezzoNetto / (1 - (margine / 100));  // Formula corretta
     let totale = prezzoConMargine + trasporto + installazione;
     let maggiorazione = ((totale - prezzoNetto) / prezzoNetto) * 100;
 
     document.getElementById('prezzoNetto').textContent = formatNumber(prezzoNetto) + " €";
     document.getElementById('totaleIva').textContent = formatNumber(totale) + " €";
     document.getElementById('maggiorazione').textContent = formatNumber(maggiorazione) + " %";
+
+    // Salva il valore per il noleggio
+    localStorage.setItem("ultimoImporto", totale);
 });
 
 function calcolaNoleggio() {
     let importoInput = document.getElementById("importo").value;
+    
+    // Recupera l'importo dal calcolo se il campo è vuoto
+    if (!importoInput.trim()) {
+        importoInput = localStorage.getItem("ultimoImporto") || "0";
+    }
+
     let importo = parseEuropeanFloat(importoInput);
 
     if (importo === 0 || isNaN(importo)) {
