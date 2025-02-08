@@ -1,23 +1,27 @@
 document.addEventListener("DOMContentLoaded", function() {
     setTimeout(() => {
-        document.getElementById('calcola').addEventListener('click', calcolaPrezzo);
-        document.getElementById('calcolaNoleggio').addEventListener('click', calcolaNoleggio);
-        document.getElementById('generaPdfConNoleggio').addEventListener('click', () => generaPDF(true));
-        document.getElementById('generaPdfSenzaNoleggio').addEventListener('click', () => generaPDF(false));
-        document.getElementById('generaPdfConProvvigione').addEventListener('click', generaPDFProvvigione);
-        document.getElementById('inviaWhatsApp').addEventListener('click', inviaWhatsApp);
-        document.getElementById('inviaWhatsAppCompleto').addEventListener('click', inviaWhatsAppCompleto);
+        assignEventListeners();
     }, 500);
 });
 
-function calcolaPrezzo() {
-    const prezzoLordo = parseEuropeanFloat(document.getElementById('prezzoLordo').value);
-    const sconto = parseFloat(document.getElementById('sconto').value) || 0;
-    const margine = parseFloat(document.getElementById('margine').value) || 0;
-    const trasporto = parseEuropeanFloat(document.getElementById('trasporto').value);
-    const installazione = parseEuropeanFloat(document.getElementById('installazione').value);
+function assignEventListeners() {
+    document.getElementById('calcola').addEventListener('click', calcolaPrezzo);
+    document.getElementById('calcolaNoleggio').addEventListener('click', calcolaNoleggio);
+    document.getElementById('generaPdfConNoleggio').addEventListener('click', () => generaPDF(true));
+    document.getElementById('generaPdfSenzaNoleggio').addEventListener('click', () => generaPDF(false));
+    document.getElementById('generaPdfConProvvigione').addEventListener('click', generaPDFProvvigione);
+    document.getElementById('inviaWhatsApp').addEventListener('click', inviaWhatsApp);
+    document.getElementById('inviaWhatsAppCompleto').addEventListener('click', inviaWhatsAppCompleto);
+}
 
-    let totaleIvaEsclusa = parseEuropeanFloat(document.getElementById('totaleIvaManuale').value) || 
+function calcolaPrezzo() {
+    const prezzoLordo = safeParseFloat(document.getElementById('prezzoLordo').value);
+    const sconto = safeParseFloat(document.getElementById('sconto').value);
+    const margine = safeParseFloat(document.getElementById('margine').value);
+    const trasporto = safeParseFloat(document.getElementById('trasporto').value);
+    const installazione = safeParseFloat(document.getElementById('installazione').value);
+
+    let totaleIvaEsclusa = safeParseFloat(document.getElementById('totaleIvaManuale').value) || 
                            (prezzoLordo - (prezzoLordo * (sconto / 100))) / (1 - (margine / 100));
 
     const provvigione = ((totaleIvaEsclusa - trasporto - installazione) * (margine / 100));
@@ -31,7 +35,7 @@ function calcolaPrezzo() {
 }
 
 function calcolaNoleggio() {
-    let importo = parseEuropeanFloat(document.getElementById('importo').value) || parseEuropeanFloat(localStorage.getItem("totaleIvaEsclusa")) || 0;
+    let importo = safeParseFloat(document.getElementById('importo').value) || safeParseFloat(localStorage.getItem("totaleIvaEsclusa")) || 0;
     if (importo === 0 || isNaN(importo)) {
         alert("Per favore, inserisci un importo valido.");
         return;
@@ -80,10 +84,9 @@ function getCoefficient(importo, durata) {
     return null;
 }
 
-function parseEuropeanFloat(value) {
+function safeParseFloat(value) {
     if (!value) return 0;
-    value = value.replace(/€/g, '').replace(/\s/g, '').replace(/\./g, '').replace(',', '.');
-    return parseFloat(value) || 0;
+    return parseFloat(value.replace(/[^0-9,.-]/g, '').replace(',', '.')) || 0;
 }
 
 function formatNumber(value) {
