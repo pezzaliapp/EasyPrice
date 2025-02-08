@@ -1,38 +1,36 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EasyPrice</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="manifest" href="manifest.json">
-    <script defer src="app.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EasyPrice</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
 </head>
 <body>
-
+  <div class="container">
     <h1>EasyPrice - Calcolatore Prezzi</h1>
 
     <form id="calcForm">
-        <label for="prezzoLordo">Prezzo Lordo (€):</label>
-        <input type="text" id="prezzoLordo" placeholder="Inserisci il prezzo lordo" required>
+      <label for="prezzoLordo">Prezzo Lordo (€):</label>
+      <input type="text" id="prezzoLordo" placeholder="Inserisci il prezzo lordo" required>
 
-        <label for="sconto">Sconto (%):</label>
-        <input type="text" id="sconto" placeholder="Inserisci lo sconto" required>
+      <label for="sconto">Sconto (%):</label>
+      <input type="text" id="sconto" placeholder="Inserisci lo sconto" required>
 
-        <label for="margine">Margine MC (%):</label>
-        <input type="text" id="margine" placeholder="Inserisci il margine MC" required>
+      <label for="margine">Margine MC (%):</label>
+      <input type="text" id="margine" placeholder="Inserisci il margine MC" required>
 
-        <label for="trasporto">Costo Trasporto (€):</label>
-        <input type="text" id="trasporto" placeholder="Inserisci il costo di trasporto">
+      <label for="trasporto">Costo Trasporto (€):</label>
+      <input type="text" id="trasporto" placeholder="Inserisci il costo di trasporto">
 
-        <label for="installazione">Costo Installazione (€):</label>
-        <input type="text" id="installazione" placeholder="Inserisci il costo di installazione">
+      <label for="installazione">Costo Installazione (€):</label>
+      <input type="text" id="installazione" placeholder="Inserisci il costo di installazione">
 
-        <label for="totaleIvaManuale">Totale IVA Esclusa (€) (Opzionale):</label>
-        <input type="text" id="totaleIvaManuale" placeholder="Inserisci totale IVA esclusa manualmente">
+      <label for="totaleIvaManuale">Totale IVA Esclusa (€) (Opzionale):</label>
+      <input type="text" id="totaleIvaManuale" placeholder="Inserisci totale IVA esclusa manualmente">
 
-        <button type="button" id="calcola">Calcola</button>
+      <button type="button" id="calcola">Calcola</button>
     </form>
 
     <h2>Risultati:</h2>
@@ -46,26 +44,26 @@
     <h1>Simulatore Canone di Noleggio</h1>
 
     <div class="noleggio-container">
-        <label for="importo">Importo (€):</label>
-        <input type="text" id="importo" placeholder="Inserisci importo" />
+      <label for="importo">Importo (€):</label>
+      <input type="text" id="importo" placeholder="Inserisci importo" />
 
-        <label for="durata">Durata (mesi):</label>
-        <select id="durata">
-            <option value="12">12 mesi</option>
-            <option value="18">18 mesi</option>
-            <option value="24" selected>24 mesi</option>
-            <option value="36">36 mesi</option>
-            <option value="48">48 mesi</option>
-            <option value="60">60 mesi</option>
-        </select>
+      <label for="durata">Durata (mesi):</label>
+      <select id="durata">
+        <option value="12">12 mesi</option>
+        <option value="18">18 mesi</option>
+        <option value="24" selected>24 mesi</option>
+        <option value="36">36 mesi</option>
+        <option value="48">48 mesi</option>
+        <option value="60">60 mesi</option>
+      </select>
 
-        <button type="button" id="calcolaNoleggio">Calcola Noleggio</button>
+      <button type="button" id="calcolaNoleggio">Calcola Noleggio</button>
 
-        <h2>Risultati Noleggio:</h2>
-        <p>Rata mensile: <span id="rataMensile">0,00</span> €</p>
-        <p>Spese di contratto: <span id="speseContratto">0,00</span> €</p>
-        <p>Costo giornaliero: <span id="costoGiornaliero">0,00</span> €</p>
-        <p>Costo orario: <span id="costoOrario">0,00</span> €</p>
+      <h2>Risultati Noleggio:</h2>
+      <p>Rata mensile: <span id="rataMensile">0,00</span> €</p>
+      <p>Spese di contratto: <span id="speseContratto">0,00</span> €</p>
+      <p>Costo giornaliero: <span id="costoGiornaliero">0,00</span> €</p>
+      <p>Costo orario: <span id="costoOrario">0,00</span> €</p>
     </div>
 
     <hr>
@@ -78,14 +76,18 @@
     <h2>📤 Condividi via WhatsApp</h2>
     <button type="button" id="inviaWhatsApp">📲 Invia Report su WhatsApp</button>
     <button type="button" id="inviaWhatsAppCompleto">📲 Invia Report Completo su WhatsApp</button>
+  </div>
 
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js')
-                .then(() => console.log('Service Worker registrato con successo'))
-                .catch(err => console.error('Errore nella registrazione del Service Worker:', err));
-        }
-    </script>
+  <!-- Carica prima la libreria jsPDF e poi il file app.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script defer src="app.js"></script>
 
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(() => console.log('Service Worker registrato con successo'))
+        .catch(err => console.error('Errore nella registrazione del Service Worker:', err));
+    }
+  </script>
 </body>
 </html>
