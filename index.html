@@ -6,12 +6,13 @@
     <title>EasyPrice</title>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/png" sizes="192x192" href="easyprice-192.png">
     <script defer src="app.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
+
     <h1>EasyPrice - Calcolatore Prezzi</h1>
-    
+
     <form id="calcForm">
         <label>Prezzo Lordo (€):</label>
         <input type="number" id="prezzoLordo" placeholder="Inserisci il prezzo lordo" required>
@@ -38,8 +39,8 @@
 
     <hr>
 
-    <h1>Simulatore Canoni Locazione</h1>
-    
+    <h1>Simulatore Canone di Noleggio</h1>
+
     <div class="noleggio-container">
         <label for="importo">Importo (€):</label>
         <input type="text" id="importo" placeholder="Inserisci importo" />
@@ -63,10 +64,14 @@
         <p>Costo orario: <span id="costoOrario">0,00 €</span></p>
     </div>
 
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js');
-        }
-    </script>
+    <hr>
+
+    <h2>📄 Genera Report PDF</h2>
+    <button onclick="generaPDF(true)">📄 Genera PDF con Noleggio</button>
+    <button onclick="generaPDF(false)">📄 Genera PDF senza Noleggio</button>
+
+    <h2>📤 Condividi via WhatsApp</h2>
+    <button onclick="inviaWhatsApp()">📲 Invia Report su WhatsApp</button>
+
 </body>
 </html>
