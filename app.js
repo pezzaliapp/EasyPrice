@@ -6,7 +6,7 @@ document.getElementById('calcola').addEventListener('click', function() {
     let installazione = parseFloat(document.getElementById('installazione').value) || 0;
 
     let prezzoNetto = prezzoLordo - (prezzoLordo * (sconto / 100));
-    let prezzoConMargine = prezzoNetto / (1 - (margine / 100));  // Formula corretta
+    let prezzoConMargine = prezzoNetto / (1 - (margine / 100));  
     let totale = prezzoConMargine + trasporto + installazione;
     let maggiorazione = ((totale - prezzoNetto) / prezzoNetto) * 100;
 
@@ -21,7 +21,6 @@ document.getElementById('calcola').addEventListener('click', function() {
 function calcolaNoleggio() {
     let importoInput = document.getElementById("importo").value;
     
-    // Recupera l'importo dal calcolo se il campo è vuoto
     if (!importoInput.trim()) {
         importoInput = localStorage.getItem("ultimoImporto") || "0";
     }
@@ -35,16 +34,8 @@ function calcolaNoleggio() {
 
     let durata = parseInt(document.getElementById("durata").value);
     let rataMensile = 0;
-    let speseContratto = 0;
+    let speseContratto = (importo < 5001) ? 75 : (importo < 10001) ? 100 : (importo < 25001) ? 150 : (importo < 50001) ? 225 : 300;
 
-    // Calcolo Spese di Contratto
-    if (importo < 5001) speseContratto = 75;
-    else if (importo < 10001) speseContratto = 100;
-    else if (importo < 25001) speseContratto = 150;
-    else if (importo < 50001) speseContratto = 225;
-    else speseContratto = 300;
-
-    // Coefficienti di Noleggio in base all'importo e alla durata
     const coefficienti = {
         5000: { 12: 0.084167, 18: 0.060596, 24: 0.047514, 36: 0.033879, 48: 0.026723, 60: 0.022489 },
         15000: { 12: 0.083542, 18: 0.059999, 24: 0.046924, 36: 0.033290, 48: 0.026122, 60: 0.021874 },
@@ -67,7 +58,6 @@ function calcolaNoleggio() {
     }
 
     rataMensile = importo * selectedCoefficient;
-
     let costoGiornaliero = rataMensile / 22;
     let costoOrario = costoGiornaliero / 8;
 
@@ -77,34 +67,41 @@ function calcolaNoleggio() {
     document.getElementById("costoOrario").textContent = formatNumber(costoOrario) + " €";
 }
 
-// Funzione per convertire un numero europeo in float
-function parseEuropeanFloat(value) {
-    if (!value) return 0;
-    value = value.replace(/€/g, '').replace(/\s/g, '').replace(/\./g, '').replace(',', '.');
-    const parsed = parseFloat(value);
-    return isNaN(parsed) ? 0 : parsed;
-}
+// Generazione PDF
+function generaPDF(includeNoleggio) {
+    let doc = new jsPDF();
+    doc.setFontSize(16);
+    doc.text("EasyPrice - Report", 20, 20);
+    
+    doc.setFontSize(12);
+    doc.text("Prezzo Netto: " + document.getElementById('prezzoNetto').textContent, 20, 40);
+    doc.text("Totale IVA esclusa: " + document.getElementById('totaleIva').textContent, 20, 50);
+    doc.text("Maggiorazione rispetto al netto: " + document.getElementById('maggiorazione').textContent, 20, 60);
 
-// Funzione per formattare un numero con due decimali
-function formatNumber(value) {
-    return value.toLocaleString("it-IT", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-}
-
-// Modalità Scura
-document.getElementById('darkModeToggle').addEventListener('click', () => {
-    document.body.classList.toggle('dark-mode');
-    localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    if (JSON.parse(localStorage.getItem('darkMode'))) {
-        document.body.classList.add('dark-mode');
+    if (includeNoleggio) {
+        doc.text("Rata Mensile: " + document.getElementById('rataMensile').textContent, 20, 80);
+        doc.text("Spese di Contratto: " + document.getElementById('speseContratto').textContent, 20, 90);
+        doc.text("Costo Giornaliero: " + document.getElementById('costoGiornaliero').textContent, 20, 100);
+        doc.text("Costo Orario: " + document.getElementById('costoOrario').textContent, 20, 110);
     }
-});
 
-// Registrazione del Service Worker
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./service-worker.js')
-        .then(() => console.log('Service Worker registrato con successo!'))
-        .catch(err => console.error('Errore nella registrazione del Service Worker:', err));
+    doc.save("EasyPrice_Report.pdf");
 }
+
+// Invia PDF via WhatsApp
+function inviaWhatsApp() {
+    let message = "EasyPrice - Report\n" +
+        "Prezzo Netto: " + document.getElementById('prezzoNetto').textContent + "\n" +
+        "Totale IVA esclusa: " + document.getElementById('totaleIva').textContent + "\n" +
+        "Maggiorazione rispetto al netto: " + document.getElementById('maggiorazione').textContent + "\n\n" +
+        "Rata Mensile: " + document.getElementById('rataMensile').textContent + "\n" +
+        "Spese di Contratto: " + document.getElementById('speseContratto').textContent + "\n" +
+        "Costo Giornaliero: " + document.getElementById('costoGiornaliero').textContent + "\n" +
+        "Costo Orario: " + document.getElementById('costoOrario').textContent;
+
+    let url = "https://api.whatsapp.com/send?text=" + encodeURIComponent(message);
+    window.open(url, "_blank");
+}
+
+// Integrazione jsPDF
+document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>');
