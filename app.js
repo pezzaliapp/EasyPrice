@@ -15,22 +15,19 @@ function calcolaPrezzo() {
     const trasporto = parseEuropeanFloat(document.getElementById('trasporto').value);
     const installazione = parseEuropeanFloat(document.getElementById('installazione').value);
 
-    const prezzoNetto = prezzoLordo - (prezzoLordo * (sconto / 100));
-    const prezzoConMargine = prezzoNetto / (1 - (margine / 100));
-    const totale = prezzoConMargine + trasporto + installazione;
-    const maggiorazione = ((totale - prezzoNetto) / prezzoNetto) * 100;
-    const provvigione = ((prezzoConMargine - trasporto - installazione) * (margine / 100));
+    let totaleIvaEsclusa = parseEuropeanFloat(document.getElementById('totaleIvaManuale').value) || 
+                           (prezzoLordo - (prezzoLordo * (sconto / 100))) / (1 - (margine / 100));
 
-    document.getElementById('prezzoNetto').textContent = formatNumber(prezzoNetto) + " €";
-    document.getElementById('totaleIva').textContent = formatNumber(totale) + " €";
-    document.getElementById('maggiorazione').textContent = formatNumber(maggiorazione) + " %";
+    const provvigione = ((totaleIvaEsclusa - trasporto - installazione) * (margine / 100));
+
+    document.getElementById('totaleIva').textContent = formatNumber(totaleIvaEsclusa) + " €";
     document.getElementById('provvigione').textContent = formatNumber(provvigione) + " €";
 
-    localStorage.setItem("ultimoImporto", totale);
+    localStorage.setItem("totaleIvaEsclusa", totaleIvaEsclusa);
 }
 
 function calcolaNoleggio() {
-    let importo = parseEuropeanFloat(document.getElementById('importo').value) || parseEuropeanFloat(localStorage.getItem("ultimoImporto")) || 0;
+    let importo = parseEuropeanFloat(document.getElementById('importo').value) || parseEuropeanFloat(localStorage.getItem("totaleIvaEsclusa")) || 0;
     if (importo === 0 || isNaN(importo)) {
         alert("Per favore, inserisci un importo valido.");
         return;
@@ -99,7 +96,6 @@ function generaPDFProvvigione() {
         doc.text("Costo Giornaliero: " + document.getElementById('costoGiornaliero').textContent, 20, 110);
         doc.text("Costo Orario: " + document.getElementById('costoOrario').textContent, 20, 120);
 
-        // Nota per il compenso
         doc.setFontSize(10);
         doc.text("*Il compenso sarà calcolato al netto delle spese di trasporto e installazione.*", 20, 135);
     }
