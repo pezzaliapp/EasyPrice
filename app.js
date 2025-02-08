@@ -15,7 +15,19 @@ function assignEventListeners() {
 // Funzioni di utilità per la conversione/formattazione dei numeri
 function parseEuropeanFloat(value) {
   if (!value) return 0;
-  return parseFloat(value.replace(',', '.'));
+  // Rimuove simboli di euro, spazi e altri caratteri non numerici
+  value = value.replace(/[€\s]/g, '');
+  // Se contiene una virgola, allora la virgola è il separatore decimale:
+  if (value.indexOf(',') !== -1) {
+    // Rimuove eventuali punti usati come separatori delle migliaia
+    value = value.replace(/\./g, '');
+    // Sostituisce la virgola con il punto
+    value = value.replace(',', '.');
+  } else {
+    // Se non ci sono virgole, rimuove eventuali punti (se usati come separatori delle migliaia)
+    value = value.replace(/\./g, '');
+  }
+  return parseFloat(value);
 }
 
 function formatNumber(value) {
