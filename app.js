@@ -1,11 +1,13 @@
 document.addEventListener("DOMContentLoaded", function() {
-    document.getElementById('calcola').addEventListener('click', calcolaPrezzo);
-    document.getElementById('calcolaNoleggio').addEventListener('click', calcolaNoleggio);
-    document.getElementById('generaPdfConNoleggio').addEventListener('click', () => generaPDF(true));
-    document.getElementById('generaPdfSenzaNoleggio').addEventListener('click', () => generaPDF(false));
-    document.getElementById('generaPdfConProvvigione').addEventListener('click', generaPDFProvvigione);
-    document.getElementById('inviaWhatsApp').addEventListener('click', inviaWhatsApp);
-    document.getElementById('inviaWhatsAppCompleto').addEventListener('click', inviaWhatsAppCompleto);
+    setTimeout(() => {
+        document.getElementById('calcola').addEventListener('click', calcolaPrezzo);
+        document.getElementById('calcolaNoleggio').addEventListener('click', calcolaNoleggio);
+        document.getElementById('generaPdfConNoleggio').addEventListener('click', () => generaPDF(true));
+        document.getElementById('generaPdfSenzaNoleggio').addEventListener('click', () => generaPDF(false));
+        document.getElementById('generaPdfConProvvigione').addEventListener('click', generaPDFProvvigione);
+        document.getElementById('inviaWhatsApp').addEventListener('click', inviaWhatsApp);
+        document.getElementById('inviaWhatsAppCompleto').addEventListener('click', inviaWhatsAppCompleto);
+    }, 500);
 });
 
 function calcolaPrezzo() {
@@ -76,38 +78,6 @@ function getCoefficient(importo, durata) {
         }
     }
     return null;
-}
-
-function generaPDFProvvigione() {
-    const { jsPDF } = window.jspdf;
-    let doc = new jsPDF();
-
-    const totaleIvaEsclusa = document.getElementById('totaleIva').textContent;
-    const provvigione = document.getElementById('provvigione').textContent;
-    const trasporto = document.getElementById('costiTrasporto').textContent;
-    const installazione = document.getElementById('costiInstallazione').textContent;
-
-    doc.setFontSize(16);
-    doc.text("EasyPrice - Report con Provvigione", 20, 20);
-    doc.setFontSize(12);
-
-    doc.text("Totale IVA esclusa: " + totaleIvaEsclusa, 20, 40);
-    doc.text("Costo Trasporto: " + trasporto, 20, 50);
-    doc.text("Costo Installazione: " + installazione, 20, 60);
-    doc.text("Compenso/Provvigione: " + provvigione, 20, 70);
-
-    doc.save("EasyPrice_Report_Provvigione.pdf");
-}
-
-function inviaWhatsApp() {
-    let message = `📌 EasyPrice - Report
-Totale IVA esclusa: ${document.getElementById('totaleIva').textContent}
-Costo Trasporto: ${document.getElementById('costiTrasporto').textContent}
-Costo Installazione: ${document.getElementById('costiInstallazione').textContent}
-Compenso/Provvigione: ${document.getElementById('provvigione').textContent}`;
-
-    let url = `https://wa.me/?text=${encodeURIComponent(message)}`;
-    window.open(url, "_blank");
 }
 
 function parseEuropeanFloat(value) {
