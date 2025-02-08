@@ -15,13 +15,13 @@ function assignEventListeners() {
 }
 
 function calcolaPrezzo() {
-    const prezzoLordo = safeParseFloat(document.getElementById('prezzoLordo').value);
-    const sconto = safeParseFloat(document.getElementById('sconto').value);
-    const margine = safeParseFloat(document.getElementById('margine').value);
-    const trasporto = safeParseFloat(document.getElementById('trasporto').value);
-    const installazione = safeParseFloat(document.getElementById('installazione').value);
+    const prezzoLordo = parseEuropeanFloat(document.getElementById('prezzoLordo').value);
+    const sconto = parseEuropeanFloat(document.getElementById('sconto').value);
+    const margine = parseEuropeanFloat(document.getElementById('margine').value);
+    const trasporto = parseEuropeanFloat(document.getElementById('trasporto').value);
+    const installazione = parseEuropeanFloat(document.getElementById('installazione').value);
 
-    let totaleIvaEsclusa = safeParseFloat(document.getElementById('totaleIvaManuale').value) || 
+    let totaleIvaEsclusa = parseEuropeanFloat(document.getElementById('totaleIvaManuale').value) || 
                            (prezzoLordo - (prezzoLordo * (sconto / 100))) / (1 - (margine / 100));
 
     const provvigione = ((totaleIvaEsclusa - trasporto - installazione) * (margine / 100));
@@ -35,7 +35,7 @@ function calcolaPrezzo() {
 }
 
 function calcolaNoleggio() {
-    let importo = safeParseFloat(document.getElementById('importo').value) || safeParseFloat(localStorage.getItem("totaleIvaEsclusa")) || 0;
+    let importo = parseEuropeanFloat(document.getElementById('importo').value) || parseEuropeanFloat(localStorage.getItem("totaleIvaEsclusa")) || 0;
     if (importo === 0 || isNaN(importo)) {
         alert("Per favore, inserisci un importo valido.");
         return;
@@ -84,9 +84,9 @@ function getCoefficient(importo, durata) {
     return null;
 }
 
-function safeParseFloat(value) {
+function parseEuropeanFloat(value) {
     if (!value) return 0;
-    return parseFloat(value.replace(/[^0-9,.-]/g, '').replace(',', '.')) || 0;
+    return parseFloat(value.replace(/[^\d,.-]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
 }
 
 function formatNumber(value) {
