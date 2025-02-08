@@ -1,9 +1,9 @@
 document.getElementById('calcola').addEventListener('click', function() {
-    let prezzoLordo = parseFloat(document.getElementById('prezzoLordo').value) || 0;
+    let prezzoLordo = parseEuropeanFloat(document.getElementById('prezzoLordo').value);
     let sconto = parseFloat(document.getElementById('sconto').value) || 0;
     let margine = parseFloat(document.getElementById('margine').value) || 0;
-    let trasporto = parseFloat(document.getElementById('trasporto').value) || 0;
-    let installazione = parseFloat(document.getElementById('installazione').value) || 0;
+    let trasporto = parseEuropeanFloat(document.getElementById('trasporto').value);
+    let installazione = parseEuropeanFloat(document.getElementById('installazione').value);
 
     let prezzoNetto = prezzoLordo - (prezzoLordo * (sconto / 100));
     let prezzoConMargine = prezzoNetto / (1 - (margine / 100));  
@@ -14,14 +14,13 @@ document.getElementById('calcola').addEventListener('click', function() {
     document.getElementById('totaleIva').textContent = formatNumber(totale) + " €";
     document.getElementById('maggiorazione').textContent = formatNumber(maggiorazione) + " %";
 
-    // Salva il valore per il noleggio
     localStorage.setItem("ultimoImporto", totale);
 });
 
 function calcolaNoleggio() {
-    let importoInput = document.getElementById("importo").value;
-
-    if (!importoInput.trim()) {
+    let importoInput = document.getElementById("importo").value.trim();
+    
+    if (!importoInput) {
         importoInput = localStorage.getItem("ultimoImporto") || "0";
     }
 
@@ -80,10 +79,20 @@ function generaPDF(includeNoleggio) {
     doc.text("Maggiorazione rispetto al netto: " + document.getElementById('maggiorazione').textContent, 20, 60);
 
     if (includeNoleggio) {
-        doc.text("Rata Mensile: " + document.getElementById('rataMensile').textContent, 20, 80);
-        doc.text("Spese di Contratto: " + document.getElementById('speseContratto').textContent, 20, 90);
-        doc.text("Costo Giornaliero: " + document.getElementById('costoGiornaliero').textContent, 20, 100);
-        doc.text("Costo Orario: " + document.getElementById('costoOrario').textContent, 20, 110);
+        let importoInserito = document.getElementById('importo').value;
+        let descrizioneManuale = prompt("Inserisci una descrizione opzionale per il PDF (lascia vuoto per omettere):", "");
+
+        doc.text("🟢 Simulazione Noleggio", 20, 75);
+        doc.text("Importo Inserito: " + importoInserito + " €", 20, 85);
+        doc.text("Rata Mensile: " + document.getElementById('rataMensile').textContent, 20, 95);
+        doc.text("Spese di Contratto: " + document.getElementById('speseContratto').textContent, 20, 105);
+        doc.text("Costo Giornaliero: " + document.getElementById('costoGiornaliero').textContent, 20, 115);
+        doc.text("Costo Orario: " + document.getElementById('costoOrario').textContent, 20, 125);
+
+        if (descrizioneManuale && descrizioneManuale.trim() !== "") {
+            doc.text("📌 Note:", 20, 140);
+            doc.text(descrizioneManuale, 20, 150, { maxWidth: 170 });
+        }
     }
 
     doc.save("EasyPrice_Report.pdf");
@@ -95,24 +104,14 @@ function inviaWhatsApp() {
     Totale IVA esclusa: ${document.getElementById('totaleIva').textContent}
     Maggiorazione rispetto al netto: ${document.getElementById('maggiorazione').textContent}`;
 
-    if (document.getElementById('rataMensile')) {
-        message += `
-        Rata Mensile: ${document.getElementById('rataMensile').textContent}
-        Spese di Contratto: ${document.getElementById('speseContratto').textContent}
-        Costo Giornaliero: ${document.getElementById('costoGiornaliero').textContent}
-        Costo Orario: ${document.getElementById('costoOrario').textContent}`;
-    }
-
     let url = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
     window.open(url, "_blank");
 }
 
-// Funzioni di formattazione
 function parseEuropeanFloat(value) {
     if (!value) return 0;
     value = value.replace(/€/g, '').replace(/\s/g, '').replace(/\./g, '').replace(',', '.');
-    const parsed = parseFloat(value);
-    return isNaN(parsed) ? 0 : parsed;
+    return parseFloat(value) || 0;
 }
 
 function formatNumber(value) {
