@@ -166,8 +166,8 @@ function inviaWhatsAppCompleto() {
   
   let message = `📌 EasyPrice - Report Completo
 Totale IVA esclusa: ${document.getElementById('totaleIva').textContent}
-Costo Trasporto: ${document.getElementById('costiTrasporto').textContent}
-Costo Installazione: ${document.getElementById('costiInstallazione').textContent}
+di cui Costo Trasporto: ${document.getElementById('costiTrasporto').textContent}
+di cui Costo Installazione: ${document.getElementById('costiInstallazione').textContent}
 Compenso: ${document.getElementById('provvigione').textContent}
 -----------------------------------------
 Durata: ${durataText}
