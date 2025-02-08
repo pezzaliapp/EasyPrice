@@ -1,124 +1,122 @@
 # EasyPrice
 Coltellino Svizzero del Venditore
-Ecco il file README.md formattato correttamente per GitHub, con intestazioni, codice e dettagli chiari per l’uso della PWA EasyPrice. 🚀
 
-# EasyPrice - PWA per Calcolo Prezzi e Simulazione Noleggio
+EasyPrice è un'applicazione web che offre un calcolatore prezzi e un simulatore di noleggio. L'app consente di:
 
-**EasyPrice** è una Progressive Web App (**PWA**) progettata per calcolare il prezzo netto di un prodotto applicando sconti e margini, e per simulare il canone di noleggio in base alla durata selezionata.
+- Calcolare il prezzo al netto dell'IVA, il compenso/provvigione, il costo del trasporto e dell'installazione, basandosi su prezzo lordo, sconto e margine.
+- Simulare il canone di noleggio (con rata mensile, spese di contratto, costo giornaliero e costo orario) in base a un importo e alla durata (in mesi).
+- Generare report PDF personalizzati tramite [jsPDF](https://github.com/parallax/jsPDF).
+- Condividere i report via WhatsApp, con link che funzionano sia su dispositivi Android che su iOS.
+- Essere installata come Progressive Web App (PWA) grazie al file `manifest.json` e al `service-worker.js`.
 
----
+## Caratteristiche
 
-## 📌 Tecnologie Utilizzate
-- **HTML5** - Struttura della PWA
-- **CSS3** - Stile responsive e dark mode
-- **JavaScript (JS)** - Logica di calcolo
-- **JSON** - Configurazione del manifest PWA
-- **Service Worker** - Supporto offline
-- **jsPDF** - Generazione di PDF per la stampa e la condivisione
+- **Calcolo Prezzi:**  
+  Calcola il Totale IVA esclusa, il compenso/provvigione, e i costi di trasporto e installazione, in base ai dati inseriti dall'utente.
 
----
+- **Simulatore di Noleggio:**  
+  Simula il canone di noleggio mostrando:
+  - Rata mensile
+  - Spese di contratto (calcolate in base all'importo)
+  - Costo giornaliero e costo orario
 
-## ⚙️ Funzionalità
+- **Report PDF:**  
+  Genera report PDF che includono le informazioni di prezzo e, opzionalmente, i dati della simulazione del noleggio.
 
-### 📈 Calcolo Prezzi
-✔️ Inserimento di:
-   - **Prezzo Lordo (€)**
-   - **Sconto (%)**
-   - **Margine MC (%)**
-   - **Costi di Trasporto (€)**
-   - **Costi di Installazione (€)**
+- **Condivisione via WhatsApp:**  
+  Permette di condividere un report sintetico o completo via WhatsApp. I link sono configurati per funzionare correttamente anche su dispositivi iOS.
 
-✔️ **Calcoli automatici**:
-   - **Prezzo Netto**:  
-     ```math
-     Prezzo Netto = Prezzo Lordo - (Prezzo Lordo * Sconto % / 100)
-     ```
-   - **Prezzo con Margine**:  
-     ```math
-     Prezzo con Margine = Prezzo Netto / (1 - Margine % / 100)
-     ```
-   - **Totale IVA esclusa**:  
-     ```
-     Totale = Prezzo con Margine + Trasporto + Installazione
-     ```
-   - **Maggiorazione rispetto al netto**:  
-     ```
-     Maggiorazione (%) = ((Totale - Prezzo Netto) / Prezzo Netto) * 100
-     ```
+- **Progressive Web App (PWA):**  
+  L'app è configurata come PWA per essere installabile su dispositivi mobili. Sono inclusi un file `manifest.json` (che definisce il nome, le icone, il tema e il comportamento dell'app) e un `service-worker.js` per la gestione della cache e delle funzionalità offline.
 
----
+## Installazione
 
-### ⭐ Simulatore Canone di Noleggio
-✔️ **Inserimento manuale o importazione automatica** dell'importo dal calcolo precedente  
-✔️ **Formati supportati**:  
-   - **3.000€**, **3000€**, **3.000,66€**, **3000,66€**  
-✔️ **Durate selezionabili**:  
-   - **12, 18, 24, 36, 48, 60 mesi**  
-✔️ **Calcoli automatici**:
-   - **Rata Mensile** (usando coefficienti predefiniti)
-   - **Spese di Contratto** (calcolate in base all'importo)
-   - **Costo Giornaliero** (rata mensile / 22 giorni)
-   - **Costo Orario** (costo giornaliero / 8 ore)
-✔️ **Parsing avanzato degli importi** per interpretare correttamente numeri con **punti** e **virgole**  
-✔️ **Backup automatico dei dati** per evitare la perdita delle informazioni  
+Per eseguire l'applicazione in locale:
 
----
+1. **Clona il repository:**
 
-### 📝 Generazione PDF e Invio WhatsApp
-✔️ **Genera PDF** con e senza la simulazione di noleggio  
-✔️ **Formato professionale del PDF** per stampa o condivisione  
-✔️ **Invia il PDF direttamente su WhatsApp** con un solo click  
+   ```bash
+   git clone https://github.com/pezzaliapp/EasyPrice.git
 
----
+	2.	Accedi alla cartella del progetto:
 
-### 🎨 Modalità Scura
-✔️ Attivabile con il pulsante **🌙 Modalità Scura**  
-✔️ Memorizzata automaticamente con **localStorage**  
+cd EasyPrice
 
----
 
-### 🌍 Installazione come App
-✔️ **Manifest JSON** permette di installare la PWA su **Android e PC**  
-✔️ **Service Worker** garantisce il **funzionamento offline**  
+	3.	Avvia un server locale:
+Poiché l’app è una PWA, è necessario servirla tramite HTTPS o almeno da un server locale. Ad esempio, puoi usare http-server:
 
----
+npm install -g http-server
+http-server -c-1
 
-## 🛠️ Installazione e Uso
+Oppure, se usi Visual Studio Code, puoi utilizzare l’estensione “Live Server”.
 
-### 🔹 1️⃣ Clona il repository
-```bash
-git clone https://github.com/tuo-utente/easyprice.git
-cd easyprice
+Struttura del Progetto
+	•	index.html:
+La pagina principale dell’app, che include l’interfaccia utente, i tag per il manifest e per le icone (compresi i tag specifici per iOS).
+	•	app.js:
+Il file JavaScript che gestisce la logica di calcolo, la generazione dei report PDF e la condivisione via WhatsApp.
+	•	style.css:
+Il file CSS che definisce lo stile e la responsività dell’applicazione.
+	•	manifest.json:
+Il file manifest della PWA che definisce il nome, le icone, i colori e il comportamento dell’app.
+	•	service-worker.js:
+Il file per la gestione della cache e delle funzionalità offline della PWA.
+	•	Icone:
+Le icone easyprice-192.png e easyprice-512.png sono collocate nella root del progetto e sono referenziate sia nel manifest.json che in index.html.
 
-🔹 2️⃣ Avvia un server locale (opzionale per test)
+Configurazione delle Icone e della PWA
 
-npx http-server .
+Per supportare l’installazione su dispositivi mobili (in particolare su iOS), assicurati che:
+	•	Il file manifest.json contenga i riferimenti corretti alle icone:
 
-🔹 3️⃣ Apri nel browser
-	•	Apri index.html in un browser compatibile con PWA (Chrome, Edge, Firefox, Safari).
-	•	Per installare la PWA, seleziona “Aggiungi alla schermata Home”.
+{
+  "name": "EasyPrice",
+  "short_name": "EasyPrice",
+  "description": "Calcolatore Prezzi e Simulatore Noleggio",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#f4f4f4",
+  "theme_color": "#007bff",
+  "icons": [
+    {
+      "src": "easyprice-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "easyprice-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
 
-🤝 Contribuisci
 
-Se vuoi migliorare questa PWA:
-	1.	Apri una pull request con la tua modifica
-	2.	Segnala un problema nella sezione Issues
+	•	In index.html siano presenti i tag per iOS:
 
-📜 Licenza
+<link rel="apple-touch-icon" href="easyprice-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="easyprice-512.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 
-Questo progetto è distribuito sotto licenza MIT.
 
-🎯 EasyPrice: Calcoli rapidi, precisi e ovunque tu sia! 🚀
+	•	Il sito venga servito tramite HTTPS o, in ambiente di sviluppo, tramite un server locale.
 
----
+Test e Debug
+	•	PWA:
+Verifica che l’app possa essere installata come PWA e che l’icona venga visualizzata correttamente su dispositivi mobili (specialmente su iOS).
+	•	Report PDF e WhatsApp:
+Testa la generazione dei report PDF e la funzionalità di condivisione via WhatsApp, verificando che tutti i dati vengano visualizzati correttamente e che i link siano compatibili sia con dispositivi Android che iOS.
 
-### ✅ **Modifiche e miglioramenti rispetto alla versione precedente**:
-- **Formattazione migliorata** per una leggibilità ottimale su **GitHub**.
-- **Aggiunti emoji e icone** per una visualizzazione più chiara.
-- **Sezioni separate e dettagliate** per ogni funzione della PWA.
-- **Esempi di calcolo formattati in blocchi di codice**.
-- **Link per clonare e avviare il progetto**, pronto per chi vuole testarlo o modificarlo.
+Contributi
 
----
+Se desideri contribuire a questo progetto, sei invitato a:
+	•	Inviare pull request
+	•	Segnalare problemi o suggerimenti tramite la sezione Issues di GitHub
 
-🔹 **Ora puoi copiare e incollare direttamente questo `README.md` nel tuo repository su GitHub!** 🚀
+Licenza
+
+Inserisci qui la licenza (ad esempio, MIT) se il progetto è open source.
+
+Questo progetto è stato realizzato per semplificare il calcolo dei prezzi e la simulazione di noleggio, offrendo un’interfaccia moderna, responsive e compatibile con diverse piattaforme.
