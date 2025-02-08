@@ -11,6 +11,7 @@
 </head>
 <body>
     <h1>EasyPrice - Calcolatore Prezzi</h1>
+    
     <form id="calcForm">
         <label>Prezzo Lordo (€):</label>
         <input type="number" id="prezzoLordo" placeholder="Inserisci il prezzo lordo" required>
@@ -34,6 +35,33 @@
     <p>Prezzo Netto: <span id="prezzoNetto">0,00</span> €</p>
     <p>Totale IVA esclusa: <span id="totaleIva">0,00</span> €</p>
     <p>Maggiorazione rispetto al netto: <span id="maggiorazione">0,00</span> %</p>
+
+    <hr>
+
+    <h1>Simulatore Canoni Locazione</h1>
+    
+    <div class="noleggio-container">
+        <label for="importo">Importo (€):</label>
+        <input type="text" id="importo" placeholder="Inserisci importo" />
+
+        <label for="durata">Durata (mesi):</label>
+        <select id="durata">
+            <option value="12">12 mesi</option>
+            <option value="18">18 mesi</option>
+            <option value="24" selected>24 mesi</option>
+            <option value="36">36 mesi</option>
+            <option value="48">48 mesi</option>
+            <option value="60">60 mesi</option>
+        </select>
+
+        <button onclick="calcolaNoleggio()">Calcola Noleggio</button>
+
+        <h2>Risultati Noleggio:</h2>
+        <p>Rata mensile: <span id="rataMensile">0,00 €</span></p>
+        <p>Spese di contratto: <span id="speseContratto">0,00 €</span></p>
+        <p>Costo giornaliero: <span id="costoGiornaliero">0,00 €</span></p>
+        <p>Costo orario: <span id="costoOrario">0,00 €</span></p>
+    </div>
 
     <script>
         if ('serviceWorker' in navigator) {
