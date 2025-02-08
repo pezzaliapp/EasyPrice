@@ -5,11 +5,19 @@ document.getElementById('calcola').addEventListener('click', function() {
     let trasporto = parseFloat(document.getElementById('trasporto').value) || 0;
     let installazione = parseFloat(document.getElementById('installazione').value) || 0;
 
+    // Calcolo Prezzo Netto dopo lo Sconto
     let prezzoNetto = prezzoLordo - (prezzoLordo * (sconto / 100));
-    let margineMC = prezzoNetto * (margine / 100);
-    let totale = prezzoNetto + margineMC + trasporto + installazione;
+
+    // Calcolo Margine MC corretto
+    let prezzoConMargine = prezzoNetto / (1 - (margine / 100));
+
+    // Totale IVA esclusa
+    let totale = prezzoConMargine + trasporto + installazione;
+
+    // Maggiorazione rispetto al prezzo netto
     let maggiorazione = ((totale - prezzoNetto) / prezzoNetto) * 100;
 
+    // Aggiornamento UI
     document.getElementById('prezzoNetto').textContent = prezzoNetto.toFixed(2);
     document.getElementById('totaleIva').textContent = totale.toFixed(2);
     document.getElementById('maggiorazione').textContent = maggiorazione.toFixed(2);
