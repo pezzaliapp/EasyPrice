@@ -20,7 +20,7 @@ document.getElementById('calcola').addEventListener('click', function() {
 
 function calcolaNoleggio() {
     let importoInput = document.getElementById("importo").value;
-    
+
     if (!importoInput.trim()) {
         importoInput = localStorage.getItem("ultimoImporto") || "0";
     }
@@ -67,9 +67,10 @@ function calcolaNoleggio() {
     document.getElementById("costoOrario").textContent = formatNumber(costoOrario) + " €";
 }
 
-// Generazione PDF
 function generaPDF(includeNoleggio) {
+    const { jsPDF } = window.jspdf;
     let doc = new jsPDF();
+    
     doc.setFontSize(16);
     doc.text("EasyPrice - Report", 20, 20);
     
@@ -88,20 +89,32 @@ function generaPDF(includeNoleggio) {
     doc.save("EasyPrice_Report.pdf");
 }
 
-// Invia PDF via WhatsApp
 function inviaWhatsApp() {
-    let message = "EasyPrice - Report\n" +
-        "Prezzo Netto: " + document.getElementById('prezzoNetto').textContent + "\n" +
-        "Totale IVA esclusa: " + document.getElementById('totaleIva').textContent + "\n" +
-        "Maggiorazione rispetto al netto: " + document.getElementById('maggiorazione').textContent + "\n\n" +
-        "Rata Mensile: " + document.getElementById('rataMensile').textContent + "\n" +
-        "Spese di Contratto: " + document.getElementById('speseContratto').textContent + "\n" +
-        "Costo Giornaliero: " + document.getElementById('costoGiornaliero').textContent + "\n" +
-        "Costo Orario: " + document.getElementById('costoOrario').textContent;
+    let message = `EasyPrice - Report
+    Prezzo Netto: ${document.getElementById('prezzoNetto').textContent}
+    Totale IVA esclusa: ${document.getElementById('totaleIva').textContent}
+    Maggiorazione rispetto al netto: ${document.getElementById('maggiorazione').textContent}`;
 
-    let url = "https://api.whatsapp.com/send?text=" + encodeURIComponent(message);
+    if (document.getElementById('rataMensile')) {
+        message += `
+        Rata Mensile: ${document.getElementById('rataMensile').textContent}
+        Spese di Contratto: ${document.getElementById('speseContratto').textContent}
+        Costo Giornaliero: ${document.getElementById('costoGiornaliero').textContent}
+        Costo Orario: ${document.getElementById('costoOrario').textContent}`;
+    }
+
+    let url = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
     window.open(url, "_blank");
 }
 
-// Integrazione jsPDF
-document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>');
+// Funzioni di formattazione
+function parseEuropeanFloat(value) {
+    if (!value) return 0;
+    value = value.replace(/€/g, '').replace(/\s/g, '').replace(/\./g, '').replace(',', '.');
+    const parsed = parseFloat(value);
+    return isNaN(parsed) ? 0 : parsed;
+}
+
+function formatNumber(value) {
+    return value.toLocaleString("it-IT", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
