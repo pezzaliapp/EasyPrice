@@ -1,12 +1,12 @@
 const CACHE_NAME = "easyprice-cache-v3";
 const urlsToCache = [
-    "/",
-    "/index.html",
-    "/style.css",
-    "/app.js",
-    "/manifest.json",
-    "/icon-192.png",
-    "/icon-512.png"
+    "./",
+    "./index.html",
+    "./style.css",
+    "./app.js",
+    "./manifest.json",
+    "./easyprice-192.png",
+    "./easyprice-512.png"
 ];
 
 // Installazione del Service Worker e caching iniziale
